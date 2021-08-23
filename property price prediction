@@ -1,0 +1,30 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+houseDF = pd.read_csv('House Price train.csv')
+
+
+
+#now training data
+
+X = houseDF[[ 'UNDER_CONSTRUCTION' , 'RERA', 'BHK_NO.','SQUARE_FT','READY_TO_MOVE','RESALE','LONGITUDE','LATITUDE']]
+Y = houseDF['TARGET(PRICE_IN_LACS)']
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, Y_train, Y_test= train_test_split(X,Y,test_size=0.20, random_state=1)
+
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+lm.fit(X_train,Y_train)
+
+LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None, normalize=False)
+coeff_df = pd.DataFrame(lm.coef_,X.columns,columns=['Coefficient'])
+print("............Average Values...........\n")
+print(coeff_df)
+print("\n.............PREDICTED DATA...................\n")
+predictions = lm.predict(X_test)
+print(predictions)
+plt.scatter(Y_test,predictions)
+sns.displot((Y_test-predictions), bins=50)
